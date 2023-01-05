@@ -1,24 +1,19 @@
-import React from "react"
-import {CopyToClipboard} from 'react-copy-to-clipboard';
+import React from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { styled } from '@mui/material/styles';
 import { useSnackbar } from 'notistack';
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { PublicKey, TokenAmount, Connection } from '@solana/web3.js';
-import axios from "axios";
+import axios from 'axios';
 
-import { 
-    tryGetName,
-} from '@cardinal/namespaces';
+import { tryGetName } from '@cardinal/namespaces';
 import { getProfilePicture } from '@solflare-wallet/pfp';
 import { findDisplayName } from '../name-service';
 import Jazzicon, { jsNumberForAddress } from 'react-jazzicon';
 
-import { 
-    GRAPE_RPC_ENDPOINT, 
-    THEINDEX_RPC_ENDPOINT,
-    TWITTER_PROXY } from './constants';
+import { GRAPE_RPC_ENDPOINT, THEINDEX_RPC_ENDPOINT, TWITTER_PROXY } from './constants';
 
-import { 
+import {
     Avatar,
     Button,
     Menu,
@@ -31,10 +26,7 @@ import {
     Tooltip,
 } from '@mui/material';
 
-import {
-    GRAPE_PROFILE,
-    GRAPE_COLLECTIONS_DATA
-} from '../grapeTools/constants';
+import { GRAPE_PROFILE, GRAPE_COLLECTIONS_DATA } from '../grapeTools/constants';
 
 import { ValidateCurve } from '../grapeTools/WalletAddress';
 
@@ -44,19 +36,18 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import ExploreIcon from '@mui/icons-material/Explore';
 import PersonIcon from '@mui/icons-material/Person';
 
-import { trimAddress } from "./WalletAddress";
+import { trimAddress } from './WalletAddress';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 
 const StyledMenu = styled(Menu)(({ theme }) => ({
-    '& .MuiMenu-root': {
-    },
+    '& .MuiMenu-root': {},
     '& .MuiMenu-paper': {
-        backgroundColor:'rgba(0,0,0,0.95)',
-        borderRadius:'17px'
+        backgroundColor: 'rgba(0,0,0,0.95)',
+        borderRadius: '17px',
     },
 }));
 
-export default function ExplorerView(props:any){
+export default function ExplorerView(props: any) {
     const address = props.address;
     //const [address, setAddress] = React.useState(props.address);
     const title = props.title || null;
@@ -79,7 +70,7 @@ export default function ExplorerView(props:any){
     const [twitterRegistration, setTwitterRegistration] = React.useState(null);
     const [hasProfilePicture, setHasProfilePicture] = React.useState(null);
 
-    const handleClick = (event:any) => {
+    const handleClick = (event: any) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
@@ -90,61 +81,59 @@ export default function ExplorerView(props:any){
     const { enqueueSnackbar } = useSnackbar();
 
     const handleCopyClick = () => {
-        enqueueSnackbar(`Copied!`,{ variant: 'success' });
+        enqueueSnackbar(`Copied!`, { variant: 'success' });
         handleClose();
     };
 
     const fetchProfilePicture = async () => {
-        //setLoadingPicture(true);  
-            try{
-                const { isAvailable, url } = await getProfilePicture(connection, new PublicKey(address));
-                
-                let img_url = url;
-                if (url)
-                    img_url = url.replace(/width=100/g, 'width=256');
-                setProfilePictureUrl(img_url);
-                setHasProfilePicture(isAvailable);
-                //countRef.current++;
-            }catch(e){
-                console.log("ERR: "+e)
-            }
+        //setLoadingPicture(true);
+        try {
+            const { isAvailable, url } = await getProfilePicture(connection, new PublicKey(address));
+
+            let img_url = url;
+            if (url) img_url = url.replace(/width=100/g, 'width=256');
+            setProfilePictureUrl(img_url);
+            setHasProfilePicture(isAvailable);
+            //countRef.current++;
+        } catch (e) {
+            console.log('ERR: ' + e);
+        }
         //setLoadingPicture(false);
-    }
+    };
 
     const fetchSolanaDomain = async () => {
-        console.log("fetching tryGetName: "+address);
+        console.log('fetching tryGetName: ' + address);
         setTwitterRegistration(null);
         setHasSolanaDomain(false);
         let found_cardinal = false;
         //const cardinalResolver = new CardinalTwitterIdentityResolver(ggoconnection);
-        try{
+        try {
             //const cardinal_registration = await cardinalResolver.resolve(new PublicKey(address));
             //const identity = await cardinalResolver.resolveReverse(address);
             //console.log("identity "+JSON.stringify(cardinal_registration))
-            const cardinal_registration = await tryGetName(
-                connection, 
-                new PublicKey(address)
-            );
-            
-            if (cardinal_registration){
+            const cardinal_registration = await tryGetName(connection, new PublicKey(address));
+
+            if (cardinal_registration) {
                 found_cardinal = true;
-                console.log("cardinal_registration: "+JSON.stringify(cardinal_registration));
+                console.log('cardinal_registration: ' + JSON.stringify(cardinal_registration));
                 setHasSolanaDomain(true);
                 setSolanaDomain(cardinal_registration[0]);
                 setTwitterRegistration(cardinal_registration[0]);
-                const url = `${TWITTER_PROXY}https://api.twitter.com/2/users/by&usernames=${cardinal_registration[0].slice(1)}&user.fields=profile_image_url,public_metrics`;
+                const url = `${TWITTER_PROXY}https://api.twitter.com/2/users/by&usernames=${cardinal_registration[0].slice(
+                    1
+                )}&user.fields=profile_image_url,public_metrics`;
                 const response = await axios.get(url);
                 //const twitterImage = response?.data?.data[0]?.profile_image_url;
-                if (response?.data?.data[0]?.profile_image_url){
+                if (response?.data?.data[0]?.profile_image_url) {
                     setProfilePictureUrl(response?.data?.data[0]?.profile_image_url);
                     setHasProfilePicture(true);
                 }
             }
-        }catch(e){
-            console.log("ERR: "+e);
+        } catch (e) {
+            console.log('ERR: ' + e);
         }
 
-        if (!found_cardinal){
+        if (!found_cardinal) {
             const domain = await findDisplayName(connection, address);
             if (domain) {
                 if (domain[0] !== address) {
@@ -155,55 +144,54 @@ export default function ExplorerView(props:any){
         }
     };
 
-    function GetEscrowName(props:any){
+    function GetEscrowName(props: any) {
         const thisAddress = props.address;
         const [escrowName, setEscrowName] = React.useState(null);
-      
-        const fetchVerifiedAuctionHouses = async() => {
-            try{
-                const url = GRAPE_COLLECTIONS_DATA+'verified_auctionHouses.json';
+
+        const fetchVerifiedAuctionHouses = async () => {
+            try {
+                const url = GRAPE_COLLECTIONS_DATA + 'verified_auctionHouses.json';
                 const response = await window.fetch(url, {
                     method: 'GET',
-                    headers: {
-                    }
-                  });
-                  const string = await response.text();
-                  const json = string === "" ? {} : JSON.parse(string);
+                    headers: {},
+                });
+                const string = await response.text();
+                const json = string === '' ? {} : JSON.parse(string);
 
-                  for (let itemAuctionHouse of json){
+                for (let itemAuctionHouse of json) {
                     //console.log("itemAuctionHouse: " + itemAuctionHouse.address + " vs " + thisAddress)
-                    if (itemAuctionHouse.address === thisAddress){
-                      setEscrowName(itemAuctionHouse.name);
+                    if (itemAuctionHouse.address === thisAddress) {
+                        setEscrowName(itemAuctionHouse.name);
                     }
-                  }
-                
+                }
+
                 return json;
-            } catch(e){
-                console.log("ERR: "+e)
+            } catch (e) {
+                console.log('ERR: ' + e);
                 return null;
             }
-        }
-      
-        React.useEffect(() => {   
-            if (thisAddress)
-                fetchVerifiedAuctionHouses();
+        };
+
+        React.useEffect(() => {
+            if (thisAddress) fetchVerifiedAuctionHouses();
         }, [thisAddress]);
-          
+
         return (
             <>
-                {escrowName && <Typography variant='caption' sx={{ml:1}}>({escrowName})</Typography>}
+                {escrowName && (
+                    <Typography variant="caption" sx={{ ml: 1 }}>
+                        ({escrowName})
+                    </Typography>
+                )}
             </>
         );
     }
 
-    React.useEffect(() => {   
-        if (showSolanaProfile){
-
-            {(shorten && shorten > 0) ? 
-                setSolanaDomain(trimAddress(address,shorten))
-            : 
-                setSolanaDomain(address)
-            } 
+    React.useEffect(() => {
+        if (showSolanaProfile) {
+            {
+                shorten && shorten > 0 ? setSolanaDomain(trimAddress(address, shorten)) : setSolanaDomain(address);
+            }
 
             setHasProfilePicture(null);
             setProfilePictureUrl(null);
@@ -221,62 +209,73 @@ export default function ExplorerView(props:any){
                 aria-expanded={open ? 'true' : undefined}
                 onClick={handleClick}
                 variant={buttonStyle}
-                color='inherit'
-                sx={{m:0,borderRadius:'17px',color:`${buttonColor}` }}
+                color="inherit"
+                sx={{ m: 0, borderRadius: '17px', color: `${buttonColor}` }}
                 startIcon={
                     <>
-                        {profilePictureUrl ?
-                            <Avatar alt={address} src={profilePictureUrl} sx={{ width: 30, height: 30, bgcolor: 'rgb(0, 0, 0)' }}>
-                                {address.substr(0,2)}
+                        {profilePictureUrl ? (
+                            <Avatar
+                                alt={address}
+                                src={profilePictureUrl}
+                                sx={{ width: 30, height: 30, bgcolor: 'rgb(0, 0, 0)' }}
+                            >
+                                {address.substr(0, 2)}
                             </Avatar>
-                        :
+                        ) : (
                             <>
-                            {useLogo ?
-                                <Avatar alt={address} src={useLogo} sx={{ width: 30, height: 30, bgcolor: 'rgb(0, 0, 0)' }}>
-                                    {address.substr(0,2)}
-                                </Avatar>
-                            :
-                                <ExploreIcon sx={{color:`${buttonColor}`,fontSize:`${fontSize}`}} />
-                            }
+                                {useLogo ? (
+                                    <Avatar
+                                        alt={address}
+                                        src={useLogo}
+                                        sx={{ width: 30, height: 30, bgcolor: 'rgb(0, 0, 0)' }}
+                                    >
+                                        {address.substr(0, 2)}
+                                    </Avatar>
+                                ) : (
+                                    <ExploreIcon sx={{ color: `${buttonColor}`, fontSize: `${fontSize}` }} />
+                                )}
                             </>
-                        }
+                        )}
                     </>
                 }
             >
-                <Typography sx={{color:`${buttonColor}`,fontSize:`${fontSize}`,textAlign:'left'}}>
-                    {title ?
+                <Typography sx={{ color: `${buttonColor}`, fontSize: `${fontSize}`, textAlign: 'left' }}>
+                    {title ? (
                         <>{title}</>
-                    :
+                    ) : (
                         <>
-                            {!hideTitle &&
+                            {!hideTitle && (
                                 <>
-                                    {solanaDomain ?
+                                    {solanaDomain ? (
                                         <>
                                             {solanaDomain}
-                                            {showAddress && hasSolanaDomain &&
-                                            <><br/><Typography variant='caption' sx={{textTransform:'none'}}>{(shorten && shorten > 0) ? trimAddress(address,shorten) : address}</Typography></>}
+                                            {showAddress && hasSolanaDomain && (
+                                                <>
+                                                    <br />
+                                                    <Typography variant="caption" sx={{ textTransform: 'none' }}>
+                                                        {shorten && shorten > 0
+                                                            ? trimAddress(address, shorten)
+                                                            : address}
+                                                    </Typography>
+                                                </>
+                                            )}
                                         </>
-                                    :
-                                    <>
-                                    {(shorten && shorten > 0) ? 
-                                        trimAddress(address,shorten) : address
-                                    } 
-                                    </>
-                                    }
+                                    ) : (
+                                        <>{shorten && shorten > 0 ? trimAddress(address, shorten) : address}</>
+                                    )}
                                 </>
-                            }
+                            )}
                         </>
-                    }
-                    
-                    {address && type === 'address' && !ValidateCurve(address) &&
+                    )}
+
+                    {address && type === 'address' && !ValidateCurve(address) && (
                         <>
                             <GetEscrowName address={address} />
                         </>
-                    }
-                    
+                    )}
                 </Typography>
             </Button>
-            <Paper sx={{backgroundColor:'rgba(255,255,255,0.5)'}}>
+            <Paper sx={{ backgroundColor: 'rgba(255,255,255,0.5)' }}>
                 <StyledMenu
                     id="basic-menu"
                     anchorEl={anchorEl}
@@ -285,75 +284,65 @@ export default function ExplorerView(props:any){
                     MenuListProps={{
                         'aria-labelledby': 'basic-button',
                     }}
-                    sx={{
-                    }}
+                    sx={{}}
                 >
-                    <CopyToClipboard 
-                            text={address} 
-                            onCopy={handleCopyClick}
-                        >
-                        <MenuItem 
-                            onClick={handleClose}
-                        >
-
+                    [
+                    <CopyToClipboard text={address} onCopy={handleCopyClick}>
+                        <MenuItem onClick={handleClose}>
                             <ListItemIcon>
                                 <ContentCopyIcon fontSize="small" />
                             </ListItemIcon>
                             Copy
-                            
                         </MenuItem>
                     </CopyToClipboard>
                     <Divider />
-
-                    {grapeArtProfile && 
+                    {grapeArtProfile && (
                         <>
-                        {ValidateCurve(address) ?
-                                <MenuItem 
-                                    component={Link}
-                                    to={`${GRAPE_PROFILE}${address}`}
-                                    onClick={handleClose}>
-                                        <ListItemIcon>
-                                            <PersonIcon fontSize="small" />
-                                        </ListItemIcon>
-                                        Grape Profile
-                                </MenuItem>
-                        :
-                            <Tooltip title='The address is off-curve (this address does not lie on a Ed25519 curve - typically a valid curve is generated when creating a new wallet), the address here is off-curve and can be a program derived address (PDA) like a multi-sig or escrow'>
-                                <MenuItem >
+                            {ValidateCurve(address) ? (
+                                <MenuItem component={Link} to={`${GRAPE_PROFILE}${address}`} onClick={handleClose}>
                                     <ListItemIcon>
-                                        <WarningAmberIcon sx={{ color: 'yellow' }} fontSize="small" />
+                                        <PersonIcon fontSize="small" />
                                     </ListItemIcon>
-                                    Off-Curve
+                                    Grape Profile
                                 </MenuItem>
-                            </Tooltip>
-                        }
+                            ) : (
+                                <Tooltip title="The address is off-curve (this address does not lie on a Ed25519 curve - typically a valid curve is generated when creating a new wallet), the address here is off-curve and can be a program derived address (PDA) like a multi-sig or escrow">
+                                    <MenuItem>
+                                        <ListItemIcon>
+                                            <WarningAmberIcon sx={{ color: 'yellow' }} fontSize="small" />
+                                        </ListItemIcon>
+                                        Off-Curve
+                                    </MenuItem>
+                                </Tooltip>
+                            )}
                         </>
-                    }
-                    
-                    <MenuItem 
-                        component='a'
+                    )}
+                    <MenuItem
+                        component="a"
                         href={`https://solana.fm/${type}/${address}`}
-                        target='_blank'
-                        onClick={handleClose}>
-                            <ListItemIcon>
-                                <ExploreOutlinedIcon fontSize="small" />
-                            </ListItemIcon>
-                            SolanaFM
+                        target="_blank"
+                        onClick={handleClose}
+                    >
+                        <ListItemIcon>
+                            <ExploreOutlinedIcon fontSize="small" />
+                        </ListItemIcon>
+                        SolanaFM
                     </MenuItem>
-                    <MenuItem 
-                        component='a'
+                    <MenuItem
+                        component="a"
                         href={`https://solscan.io/${type === 'address' ? 'account' : type}/${address}`}
-                        target='_blank'
-                        onClick={handleClose}>
-                            <ListItemIcon>
-                                <ExploreOutlinedIcon fontSize="small" />
-                            </ListItemIcon>
-                            SolScan
+                        target="_blank"
+                        onClick={handleClose}
+                    >
+                        <ListItemIcon>
+                            <ExploreOutlinedIcon fontSize="small" />
+                        </ListItemIcon>
+                        SolScan
                     </MenuItem>
-                    <MenuItem 
-                        component='a'
+                    <MenuItem
+                        component="a"
                         href={`https://explorer.solana.com/${type}/${address}`}
-                        target='_blank'
+                        target="_blank"
                         onClick={handleClose}
                     >
                         <ListItemIcon>
@@ -361,28 +350,25 @@ export default function ExplorerView(props:any){
                         </ListItemIcon>
                         Explorer
                     </MenuItem>
-
-                   
-
-                    {twitterRegistration &&
+                    {twitterRegistration && (
                         <>
                             <Divider />
-                            <MenuItem 
-                                component='a'
+                            <MenuItem
+                                component="a"
                                 href={`https://twitter.com/${twitterRegistration}`}
-                                target='_blank'
-                                onClick={handleClose}>
-                                    <ListItemIcon>
-                                        <TwitterIcon fontSize="small" />
-                                    </ListItemIcon>
-                                    Twitter
+                                target="_blank"
+                                onClick={handleClose}
+                            >
+                                <ListItemIcon>
+                                    <TwitterIcon fontSize="small" />
+                                </ListItemIcon>
+                                Twitter
                             </MenuItem>
                         </>
-                    }
-
+                    )}
+                    ]
                 </StyledMenu>
             </Paper>
         </>
-        
-    ); 
+    );
 }
