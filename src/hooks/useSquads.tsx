@@ -68,7 +68,7 @@ export const useSquads = (connection: Connection, wallet: WalletContextState) =>
     const getMultisigsByUser = async (): Promise<Squad[] | null> => {
         try {
             const { data: userSquads } = await axios.get<string[]>(
-                `${process.env.SQUADS_API_URL}/membersaddress=${wallet.publicKey}`
+                `${process.env.SQUADS_API_URL}/members?address=${wallet.publicKey}`
             );
             if (userSquads) {
                 const squadsApiMetadata = await Promise.all(
