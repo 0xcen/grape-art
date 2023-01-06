@@ -295,7 +295,7 @@ function DashboardContent() {
                                                         <BottomChatElement />
 
                                                         <Routes>
-                                                            <Route path="/" element={<IdentityView />} />
+                                                            <Route path="/squads" element={<IdentityView />} />
 
                                                             {/* <Route path="/featured" element={<FeaturedView />} /> */}
 
