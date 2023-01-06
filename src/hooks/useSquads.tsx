@@ -4,12 +4,6 @@ import { Program, Provider, BN } from '@project-serum/anchor';
 import Squads, { getTxPDA, DEFAULT_MULTISIG_PROGRAM_ID } from '@sqds/sdk';
 import axios from 'axios';
 import { WalletContextState } from '@solana/wallet-adapter-react';
-import { Interface } from 'ethers/lib/utils';
-import { TransactionAccount } from '@sqds/sdk/lib/sdk/src/types';
-import { getMsTransactions } from '../utils.ts/squads';
-import mockData from '../squadTxs.json';
-import { number } from 'prop-types';
-import { start } from 'repl';
 
 export interface SquadsRpcReponse {
     publicKey: PublicKey;

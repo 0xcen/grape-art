@@ -1,4 +1,4 @@
-import ReactXnft, { AnchorDom, View, Text } from "react-xnft";
+import ReactXnft, { AnchorDom, View, Text } from 'react-xnft';
 import React, { FC, ReactNode, useCallback, useMemo, Suspense, lazy, Component } from 'react';
 import { styled, ThemeProvider } from '@mui/material/styles';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import { inject } from '@vercel/analytics';
 
-import { MyCollectionsView } from "./MyCollections/MyCollections";
+import { MyCollectionsView } from './MyCollections/MyCollections';
 import { ProfileView } from './Profile/Profile';
 import MarketplaceView from './Profile/MarketplaceView';
 import { PreviewView } from './Preview/Preview';
@@ -83,7 +83,7 @@ import {
     SpotWalletAdapter,
     UnsafeBurnerWalletAdapter,
 } from '@solana/wallet-adapter-wallets';
-import { CrossmintSolanaWalletAdapter, networkToCrossmintEnvironment } from "@crossmint/connect"
+import { CrossmintSolanaWalletAdapter, networkToCrossmintEnvironment } from '@crossmint/connect';
 
 //import { mainListItems, secondaryListItems } from './components/SidebarList/SidebarList';
 import grapeTheme from './utils/config/theme';
@@ -223,12 +223,14 @@ function DashboardContent() {
                         name: 'GrapeArt',
                         description: 'Grape Art | Social. Stateless. Marketplace. on Solana',
                         url: 'https://grape.art',
-                        icons: ['https://shdw-drive.genesysgo.net/5pKmUSyh4VEpVhCCYon1kFf6fn5REtmk1rz4sGXyMrAZ/8upjSpvjc.logo.png'],
+                        icons: [
+                            'https://shdw-drive.genesysgo.net/5pKmUSyh4VEpVhCCYon1kFf6fn5REtmk1rz4sGXyMrAZ/8upjSpvjc.logo.png',
+                        ],
                     },
                 },
             }),
             new CrossmintSolanaWalletAdapter({
-                apiKey: "grape-verification",
+                apiKey: 'grape-verification',
                 environment: networkToCrossmintEnvironment(network),
             }),
             new ExodusWalletAdapter(),
@@ -293,9 +295,9 @@ function DashboardContent() {
                                                         <BottomChatElement />
 
                                                         <Routes>
-                                                            {/*<Route path="/splash" element={<SplashView />} />*/}
+                                                            <Route path="/" element={<IdentityView />} />
 
-                                                            <Route path="/featured" element={<FeaturedView />} />
+                                                            {/* <Route path="/featured" element={<FeaturedView />} /> */}
 
                                                             {/*<Route path="/feed" element={<FeedView />} />*/}
 
@@ -303,7 +305,7 @@ function DashboardContent() {
 
                                                             {/*<Route path="/solflaretest" element={<NotificationsView/>} />*/}
 
-                                                            <Route path="boarding" element={<MyCollectionsView />} >
+                                                            {/* <Route path="boarding" element={<MyCollectionsView />} >
                                                                 <Route path=":handlekey" element={<MyCollectionsView />} />
                                                             </Route>
                                                             
@@ -348,6 +350,7 @@ function DashboardContent() {
                                                                 <Route path=":handlekey" element={<StorageView />} />
                                                             </Route>
 
+                                                        */}
                                                             <Route path="*" element={<NotFound />} />
                                                         </Routes>
 
