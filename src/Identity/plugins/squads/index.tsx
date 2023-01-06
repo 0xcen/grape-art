@@ -28,26 +28,8 @@ import {
     Button,
 } from '@mui/material';
 
-import grapeTheme from '../../../utils/config/theme';
-
-import {
-    Close,
-    FirstPage,
-    LastPage,
-    KeyboardArrowRight,
-    KeyboardArrowDown,
-    KeyboardArrowUp,
-} from '@mui/icons-material';
 import { GRAPE_RPC_ENDPOINT } from '../../../utils/grapeTools/constants';
-import { DataGrid } from '@mui/x-data-grid/DataGrid/DataGrid';
-import { GridColDef } from '@mui/x-data-grid';
-import { date } from 'fp-ts';
 import { MsRow } from './MsRow';
-
-// todolist:
-// 2) paginate fetching of transactions
-// 3) display squad data propperly
-// 4) css
 
 export interface DialogTitleProps {
     id: string;
@@ -71,8 +53,6 @@ export function SquadsView(props: any) {
     const emptyRows = rowsPerPage - rows > 0 ? rowsPerPage - rows : 0;
 
     const renderEmptyRows = (rows: number) => {
-        console.log({ emptyRows });
-
         const emptyRowArray = [];
         for (let i = 0; i < rows; i++) {
             emptyRowArray.push(
