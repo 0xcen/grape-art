@@ -1107,12 +1107,11 @@ export function IdentityView(props: any) {
                     <Grid container direction="column" spacing={2} alignItems="center" rowSpacing={8}>
                         <Grid item xs={12} alignItems="center">
                             <Typography variant="h5" color="inherit" display="flex" sx={{ mb: 3 }}>
-                                <SolIcon sx={{ fontSize: '20px', mr: 1 }} />
-                                WALLET
+                                Squads
                             </Typography>
                             {publicKey && pubkey !== publicKey.toBase58() && (
                                 <Button component={Link} to={`./`} sx={{ borderRadius: '17px' }}>
-                                    Show my wallet
+                                    Show my squad
                                 </Button>
                             )}
                         </Grid>
@@ -1145,152 +1144,6 @@ export function IdentityView(props: any) {
                                             </ListItem>
                                         </List>
                                     </Grid>
-                                </Grid>
-
-                                <Grid container>
-                                    <Grid item sm={12} md={4}>
-                                        <Typography variant="h6">SOL:</Typography>
-
-                                        <List dense={true}>
-                                            <ListItem sx={{ width: '100%' }}>
-                                                <ListItemAvatar>
-                                                    <Avatar sx={{ backgroundColor: '#222' }}>
-                                                        <SolCurrencyIcon sx={{ color: 'white' }} />
-                                                    </Avatar>
-                                                </ListItemAvatar>
-                                                <Grid container sx={{ width: '100%' }}>
-                                                    <Grid item>
-                                                        <ListItemText
-                                                            primary={
-                                                                <Typography variant="h4">
-                                                                    {solanaBalance && <>{solanaBalance / 10 ** 9}</>}
-                                                                </Typography>
-                                                            }
-                                                            secondary={
-                                                                <>
-                                                                    {solanaUSDC && (
-                                                                        <Typography variant="caption">
-                                                                            {(
-                                                                                (solanaBalance / 10 ** 9) *
-                                                                                solanaUSDC
-                                                                            ).toFixed(2)}
-                                                                            USDC{' '}
-                                                                            <i>
-                                                                                (1 SOL = {solanaUSDC.toFixed(2)} USDC)
-                                                                            </i>
-                                                                        </Typography>
-                                                                    )}
-                                                                </>
-                                                            }
-                                                        />
-                                                    </Grid>
-
-                                                    {publicKey && pubkey === publicKey.toBase58() && (
-                                                        <Grid
-                                                            item
-                                                            xs
-                                                            sx={{ ml: 2 }}
-                                                            alignContent="middle"
-                                                            textAlign="center"
-                                                        >
-                                                            <SendToken
-                                                                mint={'So11111111111111111111111111111111111111112'}
-                                                                name={'SOL'}
-                                                                logoURI={
-                                                                    'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'
-                                                                }
-                                                                balance={new TokenAmount(solanaBalance, 9).format()}
-                                                                conversionrate={0}
-                                                                showTokenName={false}
-                                                                sendType={0}
-                                                                fetchSolanaBalance={fetchSolanaBalance}
-                                                            />
-                                                        </Grid>
-                                                    )}
-                                                </Grid>
-                                            </ListItem>
-                                        </List>
-                                    </Grid>
-                                    {solanaHoldings && tokensNetValue && (
-                                        <Grid item sm={12} md={4}>
-                                            <Typography variant="h6">Token Value:</Typography>
-
-                                            <List dense={true}>
-                                                <ListItem sx={{ width: '100%' }}>
-                                                    <ListItemAvatar>
-                                                        <Avatar sx={{ backgroundColor: '#222' }}>
-                                                            <SolCurrencyIcon sx={{ color: 'white' }} />
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <Grid container sx={{ width: '100%' }}>
-                                                        <Grid item>
-                                                            <ListItemText
-                                                                primary={
-                                                                    <Typography variant="h4">
-                                                                        {(tokensNetValue / solanaUSDC).toFixed(9)}
-                                                                    </Typography>
-                                                                }
-                                                                secondary={
-                                                                    <>
-                                                                        {solanaUSDC && (
-                                                                            <Typography variant="caption">
-                                                                                {tokensNetValue.toFixed(2)} USDC
-                                                                            </Typography>
-                                                                        )}
-                                                                    </>
-                                                                }
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </ListItem>
-                                            </List>
-                                        </Grid>
-                                    )}
-
-                                    {solanaHoldings && tokensNetValue && (
-                                        <Grid item sm={12} md={4}>
-                                            <Typography variant="h6">TTV:</Typography>
-
-                                            <List dense={true}>
-                                                <ListItem sx={{ width: '100%' }}>
-                                                    <ListItemAvatar>
-                                                        <Avatar sx={{ backgroundColor: '#222' }}>
-                                                            <SolCurrencyIcon sx={{ color: 'white' }} />
-                                                        </Avatar>
-                                                    </ListItemAvatar>
-                                                    <Grid container sx={{ width: '100%' }}>
-                                                        <Grid item>
-                                                            <ListItemText
-                                                                primary={
-                                                                    <Typography variant="h4">
-                                                                        {(
-                                                                            tokensNetValue / solanaUSDC +
-                                                                            solanaBalance / 10 ** 9
-                                                                        ).toFixed(9)}
-                                                                    </Typography>
-                                                                }
-                                                                secondary={
-                                                                    <>
-                                                                        {solanaUSDC && (
-                                                                            <Typography variant="caption">
-                                                                                {(
-                                                                                    (solanaBalance / 10 ** 9) *
-                                                                                        solanaUSDC +
-                                                                                    tokensNetValue
-                                                                                ).toFixed(2)}{' '}
-                                                                                USDC
-                                                                            </Typography>
-                                                                        )}
-                                                                    </>
-                                                                }
-                                                                sx={{ color: 'yellow' }}
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
-                                                </ListItem>
-                                            </List>
-                                        </Grid>
-                                    )}
                                 </Grid>
 
                                 {(loadingWallet || loadingTokens || loadingStorage || loadingStreamingPayments) && (
